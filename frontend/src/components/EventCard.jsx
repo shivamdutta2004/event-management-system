@@ -1,5 +1,4 @@
 import {
-  CalendarDays,
   MapPin,
   Users,
 } from "lucide-react"
@@ -8,12 +7,6 @@ import { Link } from "react-router-dom"
 
 
 function EventCard({ event }) {
-
-  const organizerName =
-    event.organizer_name ||
-    event.organizer ||
-    "Event Organizer"
-
 
   const attendeeCount =
     event.attendee_count ??
@@ -28,7 +21,6 @@ function EventCard({ event }) {
 
 
   return (
-
     <article className="group overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm transition duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-slate-200/60">
 
       {/* =====================================================
@@ -51,11 +43,9 @@ function EventCard({ event }) {
 
 
         <div className="absolute bottom-4 left-4 text-white">
-
           <p className="text-sm font-medium">
             {event.date || "Date unavailable"}
           </p>
-
         </div>
 
       </div>
@@ -75,23 +65,17 @@ function EventCard({ event }) {
         <div className="mt-4 space-y-2.5">
 
           {/* Location */}
-
           <div className="flex items-center gap-2.5 text-sm text-slate-500">
-
             <MapPin className="h-4 w-4 shrink-0" />
 
             <span className="truncate">
-              {event.location ||
-                "Location unavailable"}
+              {event.location || "Location unavailable"}
             </span>
-
           </div>
 
 
           {/* Attendees */}
-
           <div className="flex items-center gap-2.5 text-sm text-slate-500">
-
             <Users className="h-4 w-4 shrink-0" />
 
             <span>
@@ -100,7 +84,6 @@ function EventCard({ event }) {
               {maxAttendees > 0 &&
                 ` / ${maxAttendees}`}
             </span>
-
           </div>
 
         </div>
@@ -119,7 +102,7 @@ function EventCard({ event }) {
             </p>
 
             <p className="mt-0.5 text-sm font-medium text-slate-700">
-              {organizerName}
+              Shivam Dutta
             </p>
 
           </div>

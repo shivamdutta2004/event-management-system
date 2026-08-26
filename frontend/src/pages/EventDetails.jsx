@@ -119,46 +119,38 @@ function EventDetails() {
       setLoading(true)
       setError("")
 
-
       try {
         const data =
           await apiRequest(
             `/api/events/${id}`
           )
 
-
         const normalizedEvent =
           normalizeEvent(data)
-
 
         setEvent(
           normalizedEvent
         )
-
 
         setAttendeeCount(
           Number(
             data.attendee_count ?? 0
           )
         )
-
       } catch (err) {
         console.error(
           "Failed to load event:",
           err
         )
 
-
         setError(
           err?.message ||
           "Unable to load this event."
         )
-
       } finally {
         setLoading(false)
       }
     }
-
 
     loadEvent()
   }, [id])
@@ -177,13 +169,11 @@ function EventDetails() {
           )
 
         setCurrentUser(data)
-
       } catch (err) {
         // Public visitors may not be authenticated.
         setCurrentUser(null)
       }
     }
-
 
     loadCurrentUser()
   }, [])
@@ -197,19 +187,16 @@ function EventDetails() {
     setScheduleLoading(true)
     setScheduleError("")
 
-
     try {
       const data =
         await apiRequest(
           `/api/events/${id}/schedules`
         )
 
-
       const schedules =
         Array.isArray(data)
           ? data
           : data?.schedules || []
-
 
       setSchedule(
         schedules
@@ -225,7 +212,6 @@ function EventDetails() {
           .map(
             (session) => ({
               ...session,
-
               time:
                 formatTimeRange(
                   session.start_time,
@@ -234,22 +220,18 @@ function EventDetails() {
             })
           )
       )
-
     } catch (err) {
       console.error(
         "Failed to load schedule:",
         err
       )
 
-
       setScheduleError(
         err?.message ||
         "Unable to load the event schedule."
       )
 
-
       setSchedule([])
-
     } finally {
       setScheduleLoading(false)
     }
@@ -273,12 +255,10 @@ function EventDetails() {
             "/api/registrations/me"
           )
 
-
         const registrations =
           Array.isArray(data)
             ? data
             : data?.registrations || []
-
 
         const currentRegistration =
           registrations.find(
@@ -292,7 +272,6 @@ function EventDetails() {
                 "confirmed"
           )
 
-
         if (currentRegistration) {
           setAlreadyRegistered(true)
           setRegistrationSuccess(true)
@@ -300,7 +279,6 @@ function EventDetails() {
           setAlreadyRegistered(false)
           setRegistrationSuccess(false)
         }
-
       } catch (err) {
         console.log(
           "Registration check skipped:",
@@ -310,7 +288,6 @@ function EventDetails() {
         setAlreadyRegistered(false)
       }
     }
-
 
     checkRegistration()
   }, [id])
@@ -339,11 +316,9 @@ function EventDetails() {
       return
     }
 
-
     setRegistrationError("")
     setRegistrationSuccess(false)
     setRegistering(true)
-
 
     try {
       const data =
@@ -354,37 +329,30 @@ function EventDetails() {
           }
         )
 
-
       console.log(
         "Registration successful:",
         data
       )
 
-
       setRegistrationSuccess(true)
       setAlreadyRegistered(true)
-
 
       setAttendeeCount(
         (current) =>
           current + 1
       )
-
     } catch (err) {
       console.error(
         "Registration failed:",
         err
       )
 
-
       const message =
         err?.message ||
         "Unable to register for this event."
 
-
       const lowerMessage =
         message.toLowerCase()
-
 
       // -----------------------------------------------------
       // AUTHENTICATION ERROR
@@ -421,11 +389,9 @@ function EventDetails() {
         return
       }
 
-
       setRegistrationError(
         message
       )
-
     } finally {
       setRegistering(false)
     }
@@ -481,7 +447,6 @@ function EventDetails() {
     }
 
     setEditingSchedule(null)
-
     setScheduleEditError("")
   }
 
@@ -514,14 +479,10 @@ function EventDetails() {
       return
     }
 
-
     setScheduleEditError("")
     setScheduleEditSuccess("")
 
-
-    if (
-      !scheduleForm.title.trim()
-    ) {
+    if (!scheduleForm.title.trim()) {
       setScheduleEditError(
         "Session title is required."
       )
@@ -529,10 +490,7 @@ function EventDetails() {
       return
     }
 
-
-    if (
-      !scheduleForm.start_time
-    ) {
+    if (!scheduleForm.start_time) {
       setScheduleEditError(
         "Session start time is required."
       )
@@ -540,17 +498,13 @@ function EventDetails() {
       return
     }
 
-
-    if (
-      !scheduleForm.end_time
-    ) {
+    if (!scheduleForm.end_time) {
       setScheduleEditError(
         "Session end time is required."
       )
 
       return
     }
-
 
     if (
       scheduleForm.end_time <=
@@ -563,9 +517,7 @@ function EventDetails() {
       return
     }
 
-
     setSavingSchedule(true)
-
 
     try {
       await apiRequest(
@@ -596,14 +548,11 @@ function EventDetails() {
         }
       )
 
-
       setScheduleEditSuccess(
         "Session updated successfully."
       )
 
-
       await loadSchedule()
-
 
       setTimeout(() => {
         setEditingSchedule(null)
@@ -615,12 +564,10 @@ function EventDetails() {
         err
       )
 
-
       setScheduleEditError(
         err?.message ||
         "Unable to update this session."
       )
-
     } finally {
       setSavingSchedule(false)
     }
@@ -639,18 +586,15 @@ function EventDetails() {
         `Delete "${session.title}" from the event schedule?`
       )
 
-
     if (!confirmed) {
       return
     }
-
 
     setScheduleDeleteError("")
 
     setDeletingScheduleId(
       session.id
     )
-
 
     try {
       await apiRequest(
@@ -660,7 +604,6 @@ function EventDetails() {
         }
       )
 
-
       setSchedule(
         (current) =>
           current.filter(
@@ -669,7 +612,6 @@ function EventDetails() {
               Number(session.id)
           )
       )
-
 
       setScheduleEditSuccess(
         "Session deleted successfully."
@@ -681,12 +623,10 @@ function EventDetails() {
         err
       )
 
-
       setScheduleDeleteError(
         err?.message ||
         "Unable to delete this session."
       )
-
     } finally {
       setDeletingScheduleId(null)
     }
@@ -710,9 +650,7 @@ function EventDetails() {
               className="inline-flex items-center gap-2 text-sm font-medium text-slate-500 transition hover:text-indigo-600"
             >
               <ArrowLeft className="h-4 w-4" />
-
               Back to events
-
             </Link>
 
           </div>
@@ -725,7 +663,6 @@ function EventDetails() {
           <div className="rounded-2xl border border-slate-200 bg-white px-6 py-20 text-center shadow-sm">
 
             <div className="mx-auto h-8 w-8 animate-spin rounded-full border-4 border-indigo-100 border-t-indigo-600" />
-
 
             <p className="mt-4 text-sm font-medium text-slate-600">
               Loading event...
@@ -757,9 +694,7 @@ function EventDetails() {
               className="inline-flex items-center gap-2 text-sm font-medium text-slate-500 transition hover:text-indigo-600"
             >
               <ArrowLeft className="h-4 w-4" />
-
               Back to events
-
             </Link>
 
           </div>
@@ -775,12 +710,10 @@ function EventDetails() {
               Unable to load event
             </h1>
 
-
             <p className="mt-3 text-sm leading-6 text-red-600">
               {error ||
                 "The requested event could not be found."}
             </p>
-
 
             <Link
               to="/events"
@@ -848,9 +781,7 @@ function EventDetails() {
             className="inline-flex items-center gap-2 text-sm font-medium text-slate-500 transition hover:text-indigo-600"
           >
             <ArrowLeft className="h-4 w-4" />
-
             Back to events
-
           </Link>
 
         </div>
@@ -995,7 +926,6 @@ function EventDetails() {
                     Practical
                   </p>
 
-
                   <p className="mt-1 text-xs leading-5 text-slate-600">
                     Learn through examples and hands-on activities.
                   </p>
@@ -1009,7 +939,6 @@ function EventDetails() {
                     Networking
                   </p>
 
-
                   <p className="mt-1 text-xs leading-5 text-slate-600">
                     Meet participants and exchange ideas.
                   </p>
@@ -1022,7 +951,6 @@ function EventDetails() {
                   <p className="text-sm font-semibold text-blue-700">
                     Experience
                   </p>
-
 
                   <p className="mt-1 text-xs leading-5 text-slate-600">
                     Gain insights from speakers and sessions.
@@ -1049,11 +977,9 @@ function EventDetails() {
                     Agenda
                   </p>
 
-
                   <h2 className="mt-2 text-2xl font-bold tracking-tight text-slate-950">
                     Event schedule
                   </h2>
-
 
                   <p className="mt-2 text-sm text-slate-500">
                     Explore the sessions and activities planned for the event.
@@ -1063,11 +989,9 @@ function EventDetails() {
 
 
                 {isOrganizer && (
-
                   <div className="rounded-lg bg-indigo-50 px-3 py-2 text-xs font-medium text-indigo-700">
                     Organizer controls enabled
                   </div>
-
                 )}
 
               </div>
@@ -1080,7 +1004,6 @@ function EventDetails() {
                   <div className="flex items-center gap-2">
 
                     <CheckCircle2 className="h-4 w-4 text-emerald-600" />
-
 
                     <p className="text-sm font-semibold text-emerald-700">
                       {scheduleEditSuccess}
@@ -1101,7 +1024,6 @@ function EventDetails() {
                     Unable to delete session
                   </p>
 
-
                   <p className="mt-1 text-xs text-red-600">
                     {scheduleDeleteError}
                   </p>
@@ -1117,7 +1039,6 @@ function EventDetails() {
 
                   <div className="mx-auto h-7 w-7 animate-spin rounded-full border-4 border-violet-100 border-t-violet-600" />
 
-
                   <p className="mt-3 text-sm font-medium text-slate-600">
                     Loading schedule...
                   </p>
@@ -1132,7 +1053,6 @@ function EventDetails() {
                     Unable to load schedule
                   </p>
 
-
                   <p className="mt-1 text-xs leading-5 text-red-600">
                     {scheduleError}
                   </p>
@@ -1145,11 +1065,9 @@ function EventDetails() {
 
                   <Clock3 className="mx-auto h-7 w-7 text-violet-400" />
 
-
                   <p className="mt-3 text-sm font-semibold text-slate-700">
                     No schedule available
                   </p>
-
 
                   <p className="mt-1 text-xs text-slate-500">
                     The organizer has not added any sessions yet.
@@ -1180,7 +1098,6 @@ function EventDetails() {
                           <p className="text-sm font-semibold text-slate-700">
                             {session.time}
                           </p>
-
 
                           {index !==
                             schedule.length - 1 && (
@@ -1307,7 +1224,6 @@ function EventDetails() {
                 Location
               </p>
 
-
               <h2 className="mt-2 text-2xl font-bold tracking-tight text-slate-950">
                 Where it happens
               </h2>
@@ -1328,7 +1244,6 @@ function EventDetails() {
                     {event.location}
                   </p>
 
-
                   <p className="mt-1 text-sm text-slate-500">
                     Join us at the event venue and be part of the experience.
                   </p>
@@ -1344,7 +1259,7 @@ function EventDetails() {
 
           {/* =================================================
               RIGHT SIDEBAR
-          ================================================== */}
+          ================================================= */}
 
           <aside className="lg:sticky lg:top-24 lg:self-start">
 
@@ -1359,11 +1274,9 @@ function EventDetails() {
                   Registration
                 </p>
 
-
                 <p className="mt-2 text-3xl font-bold">
                   {attendeeCount}
                 </p>
-
 
                 <p className="mt-1 text-sm text-white/75">
                   people registered
@@ -1385,7 +1298,6 @@ function EventDetails() {
                       Availability
                     </p>
 
-
                     <p className="mt-1 font-semibold text-slate-950">
                       {seatsLeft > 0
                         ? `${seatsLeft} seats left`
@@ -1393,7 +1305,6 @@ function EventDetails() {
                     </p>
 
                   </div>
-
 
                   <span className="text-sm font-semibold text-slate-600">
                     {attendeeCount}/{capacity}
@@ -1427,13 +1338,11 @@ function EventDetails() {
 
                       <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-emerald-600" />
 
-
                       <div>
 
                         <p className="text-sm font-semibold text-emerald-700">
                           Registration confirmed
                         </p>
-
 
                         <p className="mt-1 text-xs leading-5 text-emerald-600">
                           You are registered for this event.
@@ -1457,7 +1366,6 @@ function EventDetails() {
                     <p className="text-sm font-semibold text-red-700">
                       Registration failed
                     </p>
-
 
                     <p className="mt-1 text-xs leading-5 text-red-600">
                       {registrationError}
@@ -1485,7 +1393,6 @@ function EventDetails() {
 
                     <>
                       <span className="h-4 w-4 animate-spin rounded-full border-2 border-white/30 border-t-white" />
-
                       Registering...
                     </>
 
@@ -1493,7 +1400,6 @@ function EventDetails() {
 
                     <>
                       <CheckCircle2 className="h-4 w-4" />
-
                       Registered
                     </>
 
@@ -1501,7 +1407,6 @@ function EventDetails() {
 
                     <>
                       <CheckCircle2 className="h-4 w-4" />
-
                       {seatsLeft > 0
                         ? "Register Now"
                         : "Event Full"}
@@ -1536,13 +1441,11 @@ function EventDetails() {
 
                     </div>
 
-
                     <div>
 
                       <p className="text-xs font-medium text-slate-400">
                         Date
                       </p>
-
 
                       <p className="mt-1 text-sm font-semibold text-slate-800">
                         {event.date}
@@ -1563,13 +1466,11 @@ function EventDetails() {
 
                     </div>
 
-
                     <div>
 
                       <p className="text-xs font-medium text-slate-400">
                         Time
                       </p>
-
 
                       <p className="mt-1 text-sm font-semibold text-slate-800">
                         {event.time}
@@ -1590,13 +1491,11 @@ function EventDetails() {
 
                     </div>
 
-
                     <div>
 
                       <p className="text-xs font-medium text-slate-400">
                         Location
                       </p>
-
 
                       <p className="mt-1 text-sm font-semibold leading-6 text-slate-800">
                         {event.location}
@@ -1617,9 +1516,8 @@ function EventDetails() {
                     Organized by
                   </p>
 
-
                   <p className="mt-1 text-sm font-semibold text-slate-950">
-                    {event.organizer_name}
+                    Shivam Dutta
                   </p>
 
                 </div>
@@ -1656,11 +1554,9 @@ function EventDetails() {
                   Organizer
                 </p>
 
-
                 <h2 className="mt-1 text-xl font-bold text-slate-950">
                   Edit Session
                 </h2>
-
 
                 <p className="mt-1 text-sm text-slate-500">
                   Update the selected schedule session.
@@ -1699,7 +1595,6 @@ function EventDetails() {
                     Unable to update session
                   </p>
 
-
                   <p className="mt-1 text-xs text-red-600">
                     {scheduleEditError}
                   </p>
@@ -1736,7 +1631,6 @@ function EventDetails() {
                     Session order
                   </label>
 
-
                   <input
                     id="schedule-order"
                     type="number"
@@ -1767,7 +1661,6 @@ function EventDetails() {
                     Session title
                   </label>
 
-
                   <input
                     id="schedule-title"
                     type="text"
@@ -1796,7 +1689,6 @@ function EventDetails() {
                   >
                     Start time
                   </label>
-
 
                   <input
                     id="schedule-start"
@@ -1827,7 +1719,6 @@ function EventDetails() {
                     End time
                   </label>
 
-
                   <input
                     id="schedule-end"
                     type="time"
@@ -1856,7 +1747,6 @@ function EventDetails() {
                   >
                     Description
                   </label>
-
 
                   <textarea
                     id="schedule-description"
@@ -1918,7 +1808,6 @@ function EventDetails() {
                   <Save className="h-4 w-4" />
 
                 )}
-
 
                 {savingSchedule
                   ? "Saving..."
@@ -1987,9 +1876,9 @@ function normalizeEvent(event) {
     organizer_id:
       event.organizer_id,
 
+    // All current demo events belong to Shivam Dutta.
     organizer_name:
-      event.organizer_name ||
-      "Event Organizer",
+      "Shivam Dutta",
 
     attendee_count:
       Number(
@@ -2026,12 +1915,10 @@ function formatEventDate(
     return "Date unavailable"
   }
 
-
   const date =
     new Date(
       `${dateValue}T00:00:00`
     )
-
 
   if (
     Number.isNaN(
@@ -2042,7 +1929,6 @@ function formatEventDate(
       dateValue
     )
   }
-
 
   return date.toLocaleDateString(
     "en-US",
@@ -2067,18 +1953,15 @@ function formatTimeRange(
     return "Time unavailable"
   }
 
-
   const start =
     formatTime(
       startTime
     )
 
-
   const end =
     endTime
       ? formatTime(endTime)
       : ""
-
 
   return end
     ? `${start} – ${end}`
@@ -2097,7 +1980,6 @@ function formatTime(
     return ""
   }
 
-
   const [
     hours,
     minutes,
@@ -2105,10 +1987,8 @@ function formatTime(
     .split(":")
     .map(Number)
 
-
   const date =
     new Date()
-
 
   date.setHours(
     hours,
@@ -2116,7 +1996,6 @@ function formatTime(
     0,
     0
   )
-
 
   return date.toLocaleTimeString(
     "en-US",
@@ -2142,11 +2021,9 @@ function getEventGradient(
     "from-violet-600 via-purple-600 to-fuchsia-900",
   ]
 
-
   const index =
     Number(eventId || 1) %
     gradients.length
-
 
   return gradients[index]
 }
