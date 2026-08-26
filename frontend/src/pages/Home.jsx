@@ -1,8 +1,8 @@
+import { useEffect, useState } from "react"
 import {
   ArrowRight,
   CalendarDays,
   CheckCircle2,
-  Search,
   Sparkles,
   Users,
 } from "lucide-react"
@@ -13,13 +13,60 @@ import EventCard from "../components/EventCard"
 import Footer from "../components/Footer"
 import OrganizerCTA from "../components/OrganizerCTA"
 
-import {
-  mockCategories,
-  mockEvents,
-} from "../data/mockData"
+import { mockCategories } from "../data/mockData"
+import { apiRequest } from "../lib/api"
+
 
 function Home() {
-  const featuredEvents = mockEvents.slice(0, 3)
+  const [featuredEvents, setFeaturedEvents] = useState([])
+  const [loadingEvents, setLoadingEvents] = useState(true)
+  const [eventsError, setEventsError] = useState("")
+
+
+  useEffect(() => {
+    let mounted = true
+
+    async function loadFeaturedEvents() {
+      try {
+        setLoadingEvents(true)
+        setEventsError("")
+
+        const response = await apiRequest("/api/events")
+
+        let events = []
+
+        if (Array.isArray(response)) {
+          events = response
+        } else if (Array.isArray(response?.data)) {
+          events = response.data
+        } else if (Array.isArray(response?.events)) {
+          events = response.events
+        }
+
+        if (mounted) {
+          setFeaturedEvents(events.slice(0, 3))
+        }
+      } catch (error) {
+        if (mounted) {
+          setEventsError(
+            error?.message || "Unable to load upcoming events."
+          )
+          setFeaturedEvents([])
+        }
+      } finally {
+        if (mounted) {
+          setLoadingEvents(false)
+        }
+      }
+    }
+
+    loadFeaturedEvents()
+
+    return () => {
+      mounted = false
+    }
+  }, [])
+
 
   return (
     <div className="min-h-screen overflow-hidden bg-white">
@@ -36,6 +83,7 @@ function Home() {
 
         <div className="pointer-events-none absolute bottom-0 left-1/2 h-64 w-64 -translate-x-1/2 rounded-full bg-blue-100/30 blur-3xl" />
 
+
         <div className="relative mx-auto max-w-7xl px-4 pb-20 pt-16 sm:px-6 sm:pb-24 sm:pt-20 lg:px-8 lg:pb-28 lg:pt-24">
 
           <div className="mx-auto max-w-5xl text-center">
@@ -46,6 +94,7 @@ function Home() {
               Discover what's happening around you
             </div>
 
+
             {/* Heading */}
             <h1 className="mt-7 text-5xl font-bold tracking-tight text-slate-950 sm:text-6xl lg:text-7xl">
               Find events.
@@ -54,11 +103,13 @@ function Home() {
               </span>
             </h1>
 
+
             {/* Description */}
             <p className="mx-auto mt-6 max-w-3xl text-lg leading-8 text-slate-600 sm:text-xl">
               Discover workshops, seminars, conferences and college events.
               Create your own events and manage registrations effortlessly.
             </p>
+
 
             {/* CTA */}
             <div className="mt-9 flex flex-col items-center justify-center gap-3 sm:flex-row">
@@ -71,6 +122,7 @@ function Home() {
                 <ArrowRight className="h-4 w-4" />
               </Link>
 
+
               <Link
                 to="/create-event"
                 className="inline-flex w-full items-center justify-center rounded-xl border border-indigo-200 bg-white/90 px-6 py-3.5 text-sm font-semibold text-slate-800 shadow-sm transition hover:-translate-y-0.5 hover:border-indigo-300 hover:bg-indigo-50 sm:w-auto"
@@ -79,6 +131,7 @@ function Home() {
               </Link>
 
             </div>
+
 
             {/* Trust points */}
             <div className="mt-8 flex flex-wrap items-center justify-center gap-x-6 gap-y-3 text-sm text-slate-500">
@@ -99,38 +152,9 @@ function Home() {
               </span>
 
             </div>
+
           </div>
 
-          {/* Search */}
-          <div className="mx-auto mt-14 max-w-4xl">
-
-            <div className="rounded-3xl border border-indigo-100 bg-white/90 p-2 shadow-xl shadow-indigo-100/50 backdrop-blur">
-
-              <div className="flex flex-col gap-2 sm:flex-row">
-
-                <div className="flex flex-1 items-center gap-3 rounded-2xl border border-transparent bg-indigo-50/60 px-4 py-3.5 transition focus-within:border-indigo-200 focus-within:bg-white focus-within:ring-4 focus-within:ring-indigo-100/50">
-
-                  <Search className="h-5 w-5 shrink-0 text-indigo-500" />
-
-                  <input
-                    type="text"
-                    placeholder="Search for events, workshops, conferences..."
-                    className="w-full bg-transparent text-sm text-slate-900 outline-none placeholder:text-slate-400"
-                  />
-
-                </div>
-
-                <Link
-                  to="/events"
-                  className="inline-flex items-center justify-center rounded-2xl bg-gradient-to-r from-indigo-600 to-violet-600 px-7 py-3.5 text-sm font-semibold text-white shadow-sm transition hover:from-indigo-700 hover:to-violet-700"
-                >
-                  Search Events
-                </Link>
-
-              </div>
-
-            </div>
-          </div>
 
           {/* Small feature cards */}
           <div className="mx-auto mt-10 grid max-w-4xl gap-3 sm:grid-cols-3">
@@ -149,6 +173,7 @@ function Home() {
               </p>
             </div>
 
+
             <div className="rounded-2xl border border-violet-100 bg-white/70 p-4 text-left backdrop-blur">
               <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-violet-100 text-violet-600">
                 <Users className="h-5 w-5" />
@@ -162,6 +187,7 @@ function Home() {
                 Join communities and meet fellow attendees.
               </p>
             </div>
+
 
             <div className="rounded-2xl border border-blue-100 bg-white/70 p-4 text-left backdrop-blur">
               <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-100 text-blue-600">
@@ -180,7 +206,9 @@ function Home() {
           </div>
 
         </div>
+
       </section>
+
 
       {/* =====================================================
           STATS
@@ -199,6 +227,7 @@ function Home() {
             </p>
           </div>
 
+
           <div className="px-4 py-8 text-center sm:py-10">
             <p className="text-2xl font-bold text-slate-950 sm:text-3xl">
               10K+
@@ -209,6 +238,7 @@ function Home() {
             </p>
           </div>
 
+
           <div className="px-4 py-8 text-center sm:py-10">
             <p className="text-2xl font-bold text-slate-950 sm:text-3xl">
               100+
@@ -218,6 +248,7 @@ function Home() {
               Organizers
             </p>
           </div>
+
 
           <div className="px-4 py-8 text-center sm:py-10">
             <p className="text-2xl font-bold text-slate-950 sm:text-3xl">
@@ -230,7 +261,9 @@ function Home() {
           </div>
 
         </div>
+
       </section>
+
 
       {/* =====================================================
           FEATURED EVENTS
@@ -239,46 +272,98 @@ function Home() {
 
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
 
-          <div className="flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
+          <div>
+            <p className="text-sm font-semibold uppercase tracking-wider text-indigo-600">
+              Discover
+            </p>
 
-            <div>
-              <p className="text-sm font-semibold uppercase tracking-wider text-indigo-600">
-                Discover
+            <h2 className="mt-2 text-3xl font-bold tracking-tight text-slate-950 sm:text-4xl">
+              Featured events
+            </h2>
+
+            <p className="mt-3 max-w-xl text-slate-600">
+              Explore upcoming events and experiences available on Evently.
+            </p>
+          </div>
+
+
+          {/* Loading */}
+          {loadingEvents && (
+            <div className="mt-10 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+
+              {[1, 2, 3].map((item) => (
+                <div
+                  key={item}
+                  className="h-80 animate-pulse rounded-2xl border border-slate-200 bg-slate-50"
+                />
+              ))}
+
+            </div>
+          )}
+
+
+          {/* Error */}
+          {!loadingEvents && eventsError && (
+            <div className="mt-10 rounded-2xl border border-red-200 bg-red-50 p-6">
+              <p className="text-sm font-semibold text-red-700">
+                Unable to load featured events
               </p>
 
-              <h2 className="mt-2 text-3xl font-bold tracking-tight text-slate-950 sm:text-4xl">
-                Featured events
-              </h2>
-
-              <p className="mt-3 max-w-xl text-slate-600">
-                Explore popular events, workshops and experiences happening
-                soon.
+              <p className="mt-1 text-sm text-red-600">
+                {eventsError}
               </p>
             </div>
+          )}
 
-            <Link
-              to="/events"
-              className="inline-flex w-fit items-center gap-2 rounded-xl border border-indigo-200 bg-indigo-50/50 px-4 py-2.5 text-sm font-semibold text-indigo-700 transition hover:border-indigo-300 hover:bg-indigo-50"
-            >
-              View all events
-              <ArrowRight className="h-4 w-4" />
-            </Link>
 
-          </div>
+          {/* No events */}
+          {!loadingEvents &&
+            !eventsError &&
+            featuredEvents.length === 0 && (
+              <div className="mt-10 rounded-2xl border border-dashed border-slate-300 bg-slate-50 px-6 py-12 text-center">
 
-          <div className="mt-10 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+                <CalendarDays className="mx-auto h-10 w-10 text-slate-400" />
 
-            {featuredEvents.map((event) => (
-              <EventCard
-                key={event.id}
-                event={event}
-              />
-            ))}
+                <h3 className="mt-4 text-lg font-semibold text-slate-950">
+                  No upcoming events yet
+                </h3>
 
-          </div>
+                <p className="mx-auto mt-2 max-w-md text-sm leading-6 text-slate-500">
+                  New events will appear here once organizers publish them.
+                </p>
+
+                <Link
+                  to="/events"
+                  className="mt-5 inline-flex items-center gap-2 rounded-xl bg-slate-950 px-5 py-3 text-sm font-semibold text-white transition hover:bg-indigo-700"
+                >
+                  Explore Events
+                  <ArrowRight className="h-4 w-4" />
+                </Link>
+
+              </div>
+            )}
+
+
+          {/* Real events */}
+          {!loadingEvents &&
+            !eventsError &&
+            featuredEvents.length > 0 && (
+              <div className="mt-10 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+
+                {featuredEvents.map((event) => (
+                  <EventCard
+                    key={event.id}
+                    event={event}
+                  />
+                ))}
+
+              </div>
+            )}
 
         </div>
+
       </section>
+
 
       {/* =====================================================
           CATEGORY SECTION
@@ -304,6 +389,7 @@ function Home() {
 
           </div>
 
+
           <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
 
             {mockCategories.map((category) => (
@@ -318,7 +404,9 @@ function Home() {
           </div>
 
         </div>
+
       </section>
+
 
       {/* =====================================================
           HOW IT WORKS
@@ -343,9 +431,11 @@ function Home() {
 
           </div>
 
+
           <div className="mt-14 grid gap-6 md:grid-cols-3">
 
             <div className="rounded-2xl border border-indigo-100 bg-white p-7 shadow-sm">
+
               <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-indigo-100 text-sm font-bold text-indigo-700">
                 01
               </span>
@@ -358,9 +448,12 @@ function Home() {
                 Explore workshops, seminars, conferences and other events
                 based on your interests.
               </p>
+
             </div>
 
+
             <div className="rounded-2xl border border-violet-100 bg-white p-7 shadow-sm">
+
               <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-violet-100 text-sm font-bold text-violet-700">
                 02
               </span>
@@ -373,9 +466,12 @@ function Home() {
                 Reserve your place in a few clicks and keep track of every
                 event you've registered for.
               </p>
+
             </div>
 
+
             <div className="rounded-2xl border border-blue-100 bg-white p-7 shadow-sm">
+
               <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-blue-100 text-sm font-bold text-blue-700">
                 03
               </span>
@@ -388,17 +484,21 @@ function Home() {
                 Attend the event, connect with people and make the most of
                 the experience.
               </p>
+
             </div>
 
           </div>
 
         </div>
+
       </section>
+
 
       {/* =====================================================
           ORGANIZER CTA
       ====================================================== */}
       <OrganizerCTA />
+
 
       {/* =====================================================
           FOOTER
