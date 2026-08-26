@@ -1,4 +1,6 @@
-const API_BASE_URL = "http://127.0.0.1:8000"
+const API_BASE_URL =
+  import.meta.env.VITE_API_BASE_URL ||
+  "http://127.0.0.1:8000"
 
 
 // =========================================================
@@ -18,6 +20,7 @@ export async function apiRequest(
 
 
   // Add JSON content type unless using FormData
+
   if (
     !(options.body instanceof FormData)
   ) {
@@ -27,6 +30,7 @@ export async function apiRequest(
 
 
   // Add JWT automatically
+
   if (token) {
     headers.Authorization =
       `Bearer ${token}`
@@ -40,6 +44,7 @@ export async function apiRequest(
 
 
   // Convert JavaScript objects to JSON
+
   if (
     requestOptions.body &&
     typeof requestOptions.body === "object" &&
@@ -79,6 +84,7 @@ export async function apiRequest(
     if (data?.detail) {
 
       // FastAPI validation errors
+
       if (
         Array.isArray(
           data.detail
@@ -89,8 +95,7 @@ export async function apiRequest(
             .map((error) => {
 
               if (
-                typeof error ===
-                "string"
+                typeof error === "string"
               ) {
                 return error
               }
@@ -103,7 +108,9 @@ export async function apiRequest(
             .join(", ")
       }
 
+
       // Normal FastAPI error
+
       else if (
         typeof data.detail ===
         "string"
@@ -112,7 +119,9 @@ export async function apiRequest(
           data.detail
       }
 
+
       // Structured error object
+
       else if (
         typeof data.detail ===
         "object"
@@ -124,6 +133,7 @@ export async function apiRequest(
             data.detail
           )
       }
+
     }
 
 
