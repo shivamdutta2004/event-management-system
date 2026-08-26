@@ -3,7 +3,6 @@ import {
   CheckCircle2,
   Clock3,
   MapPin,
-  MoreHorizontal,
   Ticket,
   XCircle,
 } from "lucide-react"
@@ -805,15 +804,6 @@ function MyRegistrations() {
                                     Cancel Registration
                                   </button>
                                 )}
-
-
-                              <button
-                                type="button"
-                                className="rounded-xl border border-slate-200 p-2.5 text-slate-400 transition hover:border-indigo-200 hover:bg-indigo-50 hover:text-indigo-600"
-                                aria-label={`More actions for ${registration.title}`}
-                              >
-                                <MoreHorizontal className="h-4 w-4" />
-                              </button>
 
                             </div>
 
