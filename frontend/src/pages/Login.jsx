@@ -33,6 +33,10 @@ function Login() {
   const [error, setError] = useState("")
 
 
+  // =========================================================
+  // LOGIN
+  // =========================================================
+
   const handleSubmit = async (event) => {
     event.preventDefault()
 
@@ -68,12 +72,16 @@ function Login() {
       }
 
     } catch (error) {
-      console.error("Login failed:", error)
+      console.error(
+        "Login failed:",
+        error
+      )
 
       setError(
         error?.message ||
         "Invalid email or password."
       )
+
     } finally {
       setLoading(false)
     }
@@ -85,6 +93,7 @@ function Login() {
 
       <div className="mx-auto grid min-h-[calc(100vh-4rem)] max-w-7xl lg:grid-cols-[1.05fr_0.95fr]">
 
+
         {/* =====================================================
             LEFT PANEL
         ====================================================== */}
@@ -95,23 +104,10 @@ function Login() {
 
           <div className="pointer-events-none absolute -bottom-32 -left-24 h-96 w-96 rounded-full bg-blue-400/20 blur-3xl" />
 
+
           <div className="relative">
 
-            <Link
-              to="/"
-              className="inline-flex items-center gap-2.5"
-            >
-              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-white text-indigo-700 shadow-lg">
-                <CalendarDays className="h-5 w-5" />
-              </div>
-
-              <span className="text-xl font-semibold tracking-tight">
-                Evently
-              </span>
-            </Link>
-
-
-            <div className="mt-20 max-w-lg">
+            <div className="mt-8 max-w-lg">
 
               <div className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/10 px-3 py-1.5 text-xs font-semibold uppercase tracking-wider text-white/80 backdrop-blur">
                 <Sparkles className="h-3.5 w-3.5" />
@@ -204,6 +200,7 @@ function Login() {
 
           <div className="w-full max-w-md">
 
+
             {/* Mobile brand */}
 
             <div className="mb-8 lg:hidden">
@@ -261,6 +258,7 @@ function Login() {
               className="mt-8 space-y-5"
             >
 
+
               {/* Email */}
 
               <div>
@@ -292,7 +290,7 @@ function Login() {
 
               <div>
 
-                <div className="mb-2 flex items-center justify-between">
+                <div className="mb-2">
 
                   <label
                     htmlFor="login-password"
@@ -300,13 +298,6 @@ function Login() {
                   >
                     Password
                   </label>
-
-                  <a
-                    href="#"
-                    className="text-sm font-medium text-indigo-600 transition hover:text-indigo-800 hover:underline"
-                  >
-                    Forgot password?
-                  </a>
 
                 </div>
 
@@ -404,12 +395,14 @@ function Login() {
 
             <p className="mt-7 text-center text-sm text-slate-500">
               Don't have an account?{" "}
+
               <Link
                 to="/register"
                 className="font-semibold text-indigo-600 hover:text-indigo-800 hover:underline"
               >
                 Create an account
               </Link>
+
             </p>
 
 
