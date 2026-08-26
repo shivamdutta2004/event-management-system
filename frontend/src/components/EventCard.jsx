@@ -44,7 +44,9 @@ function EventCard({ event }) {
 
         <div className="absolute bottom-4 left-4 text-white">
           <p className="text-sm font-medium">
-            {event.date || "Date unavailable"}
+            {formatEventDate(
+              event.date || event.event_date
+            )}
           </p>
         </div>
 
@@ -66,16 +68,20 @@ function EventCard({ event }) {
 
           {/* Location */}
           <div className="flex items-center gap-2.5 text-sm text-slate-500">
+
             <MapPin className="h-4 w-4 shrink-0" />
 
             <span className="truncate">
-              {event.location || "Location unavailable"}
+              {event.location ||
+                "Location unavailable"}
             </span>
+
           </div>
 
 
           {/* Attendees */}
           <div className="flex items-center gap-2.5 text-sm text-slate-500">
+
             <Users className="h-4 w-4 shrink-0" />
 
             <span>
@@ -84,6 +90,7 @@ function EventCard({ event }) {
               {maxAttendees > 0 &&
                 ` / ${maxAttendees}`}
             </span>
+
           </div>
 
         </div>
@@ -120,6 +127,42 @@ function EventCard({ event }) {
       </div>
 
     </article>
+  )
+}
+
+
+// =========================================================
+// DATE FORMATTER
+// =========================================================
+
+function formatEventDate(dateValue) {
+
+  if (!dateValue) {
+    return "Date unavailable"
+  }
+
+
+  const date = new Date(
+    `${dateValue}T00:00:00`
+  )
+
+
+  if (
+    Number.isNaN(
+      date.getTime()
+    )
+  ) {
+    return String(dateValue)
+  }
+
+
+  return date.toLocaleDateString(
+    "en-US",
+    {
+      month: "short",
+      day: "2-digit",
+      year: "numeric",
+    }
   )
 }
 
