@@ -1,155 +1,165 @@
-const API_BASE_URL =
-  import.meta.env.VITE_API_URL || "http://127.0.0.1:8000"
+const API_BASE_URL = "http://127.0.0.1:8000"
 
-async function request(endpoint, options = {}) {
-  const {
-    method = "GET",
-    body,
-    headers = {},
-    ...rest
-  } = options
 
-  const config = {
-    method,
-    headers: {
-      ...headers,
-    },
-    ...rest,
+// =========================================================
+// API REQUEST HELPER
+// =========================================================
+
+export async function apiRequest(
+  endpoint,
+  options = {}
+) {
+  const token = getToken()
+
+  const headers = {
+    Accept: "application/json",
+    ...(options.headers || {}),
   }
 
-  if (body !== undefined) {
-    config.headers["Content-Type"] = "application/json"
-    config.body = JSON.stringify(body)
+
+  // Add JSON content type unless using FormData
+  if (
+    !(options.body instanceof FormData)
+  ) {
+    headers["Content-Type"] =
+      "application/json"
   }
 
-  const token = localStorage.getItem("access_token")
 
+  // Add JWT automatically
   if (token) {
-    config.headers.Authorization = `Bearer ${token}`
+    headers.Authorization =
+      `Bearer ${token}`
   }
+
+
+  const requestOptions = {
+    ...options,
+    headers,
+  }
+
+
+  // Convert JavaScript objects to JSON
+  if (
+    requestOptions.body &&
+    typeof requestOptions.body === "object" &&
+    !(requestOptions.body instanceof FormData)
+  ) {
+    requestOptions.body =
+      JSON.stringify(
+        requestOptions.body
+      )
+  }
+
 
   const response = await fetch(
     `${API_BASE_URL}${endpoint}`,
-    config
+    requestOptions
   )
+
 
   let data = null
 
-  const contentType = response.headers.get("content-type")
-
-  if (contentType?.includes("application/json")) {
+  try {
     data = await response.json()
-  } else {
-    data = await response.text()
+  } catch {
+    data = null
   }
+
+
+  // =======================================================
+  // ERROR HANDLING
+  // =======================================================
 
   if (!response.ok) {
-    const message =
-      typeof data === "object" && data?.detail
-        ? data.detail
-        : `Request failed with status ${response.status}`
+    let errorMessage =
+      "Something went wrong."
 
-    throw new Error(message)
+
+    if (data?.detail) {
+
+      // FastAPI validation errors
+      if (
+        Array.isArray(
+          data.detail
+        )
+      ) {
+        errorMessage =
+          data.detail
+            .map((error) => {
+
+              if (
+                typeof error ===
+                "string"
+              ) {
+                return error
+              }
+
+              return (
+                error?.msg ||
+                "Validation error."
+              )
+            })
+            .join(", ")
+      }
+
+      // Normal FastAPI error
+      else if (
+        typeof data.detail ===
+        "string"
+      ) {
+        errorMessage =
+          data.detail
+      }
+
+      // Structured error object
+      else if (
+        typeof data.detail ===
+        "object"
+      ) {
+        errorMessage =
+          data.detail.message ||
+          data.detail.msg ||
+          JSON.stringify(
+            data.detail
+          )
+      }
+    }
+
+
+    throw new Error(
+      errorMessage
+    )
   }
+
 
   return data
 }
 
-/* ================= AUTH ================= */
 
-export const authApi = {
-  register: (payload) =>
-    request("/api/auth/register", {
-      method: "POST",
-      body: payload,
-    }),
+// =========================================================
+// TOKEN FUNCTIONS
+// =========================================================
 
-  login: (payload) =>
-    request("/api/auth/login", {
-      method: "POST",
-      body: payload,
-    }),
-
-  me: () =>
-    request("/api/auth/me"),
+export function saveToken(
+  token
+) {
+  localStorage.setItem(
+    "evently_token",
+    token
+  )
 }
 
-/* ================= EVENTS ================= */
 
-export const eventsApi = {
-  getAll: (params = {}) => {
-    const searchParams = new URLSearchParams()
-
-    Object.entries(params).forEach(([key, value]) => {
-      if (value !== undefined && value !== null && value !== "") {
-        searchParams.append(key, value)
-      }
-    })
-
-    const query = searchParams.toString()
-
-    return request(
-      `/api/events${query ? `?${query}` : ""}`
-    )
-  },
-
-  getById: (id) =>
-    request(`/api/events/${id}`),
-
-  create: (payload) =>
-    request("/api/events", {
-      method: "POST",
-      body: payload,
-    }),
-
-  update: (id, payload) =>
-    request(`/api/events/${id}`, {
-      method: "PUT",
-      body: payload,
-    }),
-
-  remove: (id) =>
-    request(`/api/events/${id}`, {
-      method: "DELETE",
-    }),
-
-  register: (id) =>
-    request(`/api/events/${id}/register`, {
-      method: "POST",
-    }),
+export function getToken() {
+  return localStorage.getItem(
+    "evently_token"
+  )
 }
 
-/* ================= REGISTRATIONS ================= */
 
-export const registrationsApi = {
-  getMine: () =>
-    request("/api/my-registrations"),
-
-  cancel: (registrationId) =>
-    request(`/api/registrations/${registrationId}`, {
-      method: "DELETE",
-    }),
-}
-
-/* ================= ORGANIZER ================= */
-
-export const organizerApi = {
-  getDashboard: () =>
-    request("/api/organizer/dashboard"),
-
-  getEvents: () =>
-    request("/api/organizer/events"),
-
-  getAttendees: (eventId) =>
-    request(`/api/events/${eventId}/attendees`),
-}
-
-/* ================= PROFILE ================= */
-
-export const profileApi = {
-  update: (payload) =>
-    request("/api/profile", {
-      method: "PUT",
-      body: payload,
-    }),
+export function removeToken() {
+  localStorage.removeItem(
+    "evently_token"
+  )
 }
