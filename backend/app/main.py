@@ -1,4 +1,5 @@
 from pathlib import Path
+import os
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
@@ -21,12 +22,27 @@ app = FastAPI(
 # CORS CONFIGURATION
 # =========================================================
 
+# Local development origins
+allowed_origins = [
+    "http://localhost:5173",
+    "http://127.0.0.1:5173",
+]
+
+# Production frontend URL can be provided through an
+# environment variable when deploying the backend.
+frontend_url = os.getenv("FRONTEND_URL")
+
+if frontend_url:
+    # Avoid accidental trailing slash
+    frontend_url = frontend_url.rstrip("/")
+
+    if frontend_url not in allowed_origins:
+        allowed_origins.append(frontend_url)
+
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        "http://localhost:5173",
-        "http://127.0.0.1:5173",
-    ],
+    allow_origins=allowed_origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -38,7 +54,7 @@ app.add_middleware(
 # =========================================================
 
 # Profile images are stored in:
-# backend/app/uploads/profile-images/
+# backend/app/uploads/
 
 UPLOADS_DIR = (
     Path(__file__).resolve().parent
