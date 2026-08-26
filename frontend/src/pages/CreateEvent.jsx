@@ -11,6 +11,7 @@ import {
   useEffect,
   useState,
 } from "react"
+
 import {
   Link,
   useNavigate,
@@ -22,33 +23,61 @@ import { apiRequest } from "../lib/api"
 function CreateEvent() {
   const navigate = useNavigate()
 
-  const [checkingAccess, setCheckingAccess] = useState(true)
+  const [checkingAccess, setCheckingAccess] =
+    useState(true)
+
+
+  // =========================================================
+  // ORGANIZER ACCESS
+  // =========================================================
 
   useEffect(() => {
     let active = true
 
-    const checkOrganizerAccess = async () => {
-      try {
-        const user = await apiRequest("/api/auth/me")
+    const checkOrganizerAccess =
+      async () => {
+        try {
+          const user =
+            await apiRequest(
+              "/api/auth/me"
+            )
 
-        if (!active) {
-          return
-        }
+          if (!active) {
+            return
+          }
 
-        if (user?.role !== "organizer") {
-          navigate("/events", { replace: true })
-          return
-        }
+          if (
+            user?.role !==
+            "organizer"
+          ) {
+            navigate(
+              "/events",
+              {
+                replace: true,
+              }
+            )
 
-        setCheckingAccess(false)
-      } catch (err) {
-        console.error("Failed to verify organizer access:", err)
+            return
+          }
 
-        if (active) {
-          navigate("/login", { replace: true })
+          setCheckingAccess(false)
+
+        } catch (err) {
+          console.error(
+            "Failed to verify organizer access:",
+            err
+          )
+
+          if (active) {
+            navigate(
+              "/login",
+              {
+                replace: true,
+              }
+            )
+          }
         }
       }
-    }
 
     checkOrganizerAccess()
 
@@ -269,7 +298,8 @@ function CreateEvent() {
 
     for (
       let index = 0;
-      index < activeSessions.length;
+      index <
+      activeSessions.length;
       index += 1
     ) {
       const session =
@@ -630,15 +660,21 @@ function CreateEvent() {
   if (checkingAccess) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-slate-50 px-4">
+
         <div className="rounded-2xl border border-slate-200 bg-white px-8 py-10 text-center shadow-sm">
+
           <div className="mx-auto h-8 w-8 animate-spin rounded-full border-4 border-indigo-100 border-t-indigo-600" />
+
           <p className="mt-4 text-sm font-medium text-slate-600">
             Checking organizer access...
           </p>
+
         </div>
+
       </div>
     )
   }
+
 
   return (
     <div className="min-h-screen bg-slate-50">
@@ -695,9 +731,9 @@ function CreateEvent() {
       <main className="mx-auto max-w-5xl px-4 py-10 sm:px-6 lg:px-8">
 
 
-        {/* ===================================================
+        {/* =================================================
             FEEDBACK
-        ==================================================== */}
+        ================================================== */}
 
         {(error || message) && (
 
@@ -877,34 +913,12 @@ function CreateEvent() {
 
               <div>
 
-                <div className="mb-2 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-
-                  <label
-                    htmlFor="event-description"
-                    className="block text-sm font-medium text-slate-700"
-                  >
-                    Description
-                  </label>
-
-
-                  <button
-                    type="button"
-                    onClick={() =>
-                      setDescription(
-                        description ||
-                        "A practical event designed to provide useful knowledge, hands-on learning, networking opportunities and real-world insights for participants."
-                      )
-                    }
-                    className="inline-flex w-fit items-center gap-2 rounded-lg border border-violet-200 bg-violet-50 px-3 py-2 text-xs font-semibold text-violet-700 transition hover:border-violet-300 hover:bg-violet-100"
-                  >
-
-                    <Sparkles className="h-3.5 w-3.5" />
-
-                    Generate with AI
-
-                  </button>
-
-                </div>
+                <label
+                  htmlFor="event-description"
+                  className="mb-2 block text-sm font-medium text-slate-700"
+                >
+                  Description
+                </label>
 
 
                 <textarea
@@ -919,17 +933,6 @@ function CreateEvent() {
                   placeholder="Describe your event, what attendees will learn, who should attend, and what makes it valuable..."
                   className="w-full resize-none rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm leading-6 text-slate-950 outline-none transition hover:border-indigo-200 focus:border-indigo-400 focus:ring-4 focus:ring-indigo-100/50"
                 />
-
-
-                <div className="mt-3 flex items-start gap-2 rounded-xl border border-violet-100 bg-violet-50/50 px-4 py-3">
-
-                  <Sparkles className="mt-0.5 h-4 w-4 shrink-0 text-violet-600" />
-
-                  <p className="text-xs leading-5 text-violet-700">
-                    You can write the description yourself or generate a professional first draft using AI.
-                  </p>
-
-                </div>
 
               </div>
 

@@ -216,6 +216,28 @@ function OrganizerDashboard() {
         "Unable to load organizer dashboard."
 
 
+      const isUnauthorized =
+        message
+          .toLowerCase()
+          .includes("not authenticated") ||
+        message
+          .toLowerCase()
+          .includes("unauthorized") ||
+        message.includes("401") ||
+        message
+          .toLowerCase()
+          .includes("invalid or expired token")
+
+
+      if (isUnauthorized) {
+        navigate("/login", {
+          replace: true,
+        })
+
+        return
+      }
+
+
       setError(message)
 
     } finally {
