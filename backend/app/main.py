@@ -4,6 +4,12 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 
+from app.database import Base, engine
+from app.models.user import User
+from app.models.event import Event
+from app.models.registration import Registration
+from app.models.schedule import Schedule
+
 from app.routers.auth import router as auth_router
 from app.routers.events import router as events_router
 from app.routers.schedules import router as schedules_router
@@ -15,6 +21,15 @@ app = FastAPI(
     description="Backend API for the Evently Event Management System",
     version="1.0.0",
 )
+
+
+# =========================================================
+# DATABASE INITIALIZATION
+# =========================================================
+# Create all SQLAlchemy tables if they do not already exist.
+# This is useful for initializing the new Render PostgreSQL DB.
+
+Base.metadata.create_all(bind=engine)
 
 
 # =========================================================
