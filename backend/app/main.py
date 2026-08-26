@@ -1,5 +1,4 @@
 from pathlib import Path
-import os
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
@@ -22,23 +21,14 @@ app = FastAPI(
 # CORS CONFIGURATION
 # =========================================================
 
-# Local development origins
 allowed_origins = [
+    # Local development
     "http://localhost:5173",
     "http://127.0.0.1:5173",
+
+    # Production frontend
+    "https://event-management-system-rho-seven.vercel.app",
 ]
-
-# Production frontend URL can be provided through an
-# environment variable when deploying the backend.
-frontend_url = os.getenv("FRONTEND_URL")
-
-if frontend_url:
-    # Avoid accidental trailing slash
-    frontend_url = frontend_url.rstrip("/")
-
-    if frontend_url not in allowed_origins:
-        allowed_origins.append(frontend_url)
-
 
 app.add_middleware(
     CORSMiddleware,
