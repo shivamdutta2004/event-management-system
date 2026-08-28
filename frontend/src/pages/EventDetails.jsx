@@ -1517,7 +1517,7 @@ function EventDetails() {
                   </p>
 
                   <p className="mt-1 text-sm font-semibold text-slate-950">
-                    Shivam Dutta
+                    Evently Team
                   </p>
 
                 </div>
@@ -1876,9 +1876,8 @@ function normalizeEvent(event) {
     organizer_id:
       event.organizer_id,
 
-    // All current demo events belong to Shivam Dutta.
     organizer_name:
-      "Shivam Dutta",
+      "Evently Team",
 
     attendee_count:
       Number(

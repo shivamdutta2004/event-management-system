@@ -84,7 +84,7 @@ function Contact() {
             </h2>
 
             <p className="mt-2 text-sm text-slate-500">
-              Connect with Shivam Dutta
+              Connect with the Evently Team
             </p>
 
           </a>

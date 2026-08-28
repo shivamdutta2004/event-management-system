@@ -109,7 +109,7 @@ function EventCard({ event }) {
             </p>
 
             <p className="mt-0.5 text-sm font-medium text-slate-700">
-              Shivam Dutta
+              {event.organizer_name || "Evently Team"}
             </p>
 
           </div>

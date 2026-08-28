@@ -209,7 +209,7 @@ function Footer() {
         <div className="mt-12 flex flex-col gap-3 border-t border-slate-100 pt-6 sm:flex-row sm:items-center sm:justify-between">
 
           <p className="text-sm text-slate-400">
-            © 2026 Evently. Built by Shivam Dutta. All rights reserved.
+            © 2026 Evently. Built by the Evently Team. All rights reserved.
           </p>
 
 
