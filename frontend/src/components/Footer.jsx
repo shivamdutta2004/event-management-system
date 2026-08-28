@@ -33,53 +33,6 @@ function Footer() {
               Discover events, create experiences and manage registrations effortlessly.
             </p>
 
-
-            {/* Social / Contact links */}
-
-            <div className="mt-6 flex flex-wrap items-center gap-2">
-
-              <a
-                href="https://linkedin.com/in/shivam-dutta-67a39b2b0"
-                target="_blank"
-                rel="noreferrer"
-                className="rounded-lg border border-slate-200 px-3 py-2 text-xs font-medium text-slate-500 transition hover:bg-slate-50 hover:text-slate-950"
-              >
-                LinkedIn
-              </a>
-
-
-              <a
-                href="https://mail.google.com/mail/?view=cm&fs=1&to=shivamdutt04@gmail.com"
-                target="_blank"
-                rel="noreferrer"
-                className="inline-flex items-center gap-2 rounded-lg border border-slate-200 px-3 py-2 text-xs font-medium text-slate-500 transition hover:bg-slate-50 hover:text-slate-950"
-              >
-                <Mail className="h-3.5 w-3.5" />
-                Email
-              </a>
-
-
-              <a
-                href="https://www.instagram.com/__shivam_dutta?igsi=dHB1ODl1MTRsNTlz"
-                target="_blank"
-                rel="noreferrer"
-                className="rounded-lg border border-slate-200 px-3 py-2 text-xs font-medium text-slate-500 transition hover:bg-slate-50 hover:text-slate-950"
-              >
-                Instagram
-              </a>
-
-
-              <a
-                href="https://www.facebook.com/share/1CA4WLMDiG/"
-                target="_blank"
-                rel="noreferrer"
-                className="rounded-lg border border-slate-200 px-3 py-2 text-xs font-medium text-slate-500 transition hover:bg-slate-50 hover:text-slate-950"
-              >
-                Facebook
-              </a>
-
-            </div>
-
           </div>
 
 
