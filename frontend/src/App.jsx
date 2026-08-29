@@ -20,7 +20,9 @@ import CreateEvent from "./pages/CreateEvent"
 import EditEvent from "./pages/EditEvent"
 
 import MyRegistrations from "./pages/MyRegistrations"
+
 import OrganizerDashboard from "./pages/OrganizerDashboard"
+
 import Profile from "./pages/Profile"
 
 import About from "./pages/About"
@@ -28,6 +30,10 @@ import Contact from "./pages/Contact"
 import Privacy from "./pages/Privacy"
 import Terms from "./pages/Terms"
 
+
+// =========================================================
+// SCROLL TO TOP
+// =========================================================
 
 function ScrollToTop() {
   const { pathname } = useLocation()
@@ -40,6 +46,10 @@ function ScrollToTop() {
 }
 
 
+// =========================================================
+// APP
+// =========================================================
+
 function App() {
   return (
     <BrowserRouter>
@@ -50,7 +60,9 @@ function App() {
 
         <Route element={<MainLayout />}>
 
-          {/* Home */}
+          {/* =================================================
+              HOME
+          ================================================== */}
 
           <Route
             path="/"
@@ -58,7 +70,9 @@ function App() {
           />
 
 
-          {/* Events */}
+          {/* =================================================
+              EVENTS
+          ================================================== */}
 
           <Route
             path="/events"
@@ -71,7 +85,9 @@ function App() {
           />
 
 
-          {/* Authentication */}
+          {/* =================================================
+              AUTHENTICATION
+          ================================================== */}
 
           <Route
             path="/login"
@@ -84,7 +100,9 @@ function App() {
           />
 
 
-          {/* Event Management */}
+          {/* =================================================
+              EVENT MANAGEMENT
+          ================================================== */}
 
           <Route
             path="/create-event"
@@ -97,7 +115,9 @@ function App() {
           />
 
 
-          {/* Attendee */}
+          {/* =================================================
+              ATTENDEE
+          ================================================== */}
 
           <Route
             path="/my-registrations"
@@ -105,7 +125,9 @@ function App() {
           />
 
 
-          {/* Organizer */}
+          {/* =================================================
+              ORGANIZER
+          ================================================== */}
 
           <Route
             path="/organizer/dashboard"
@@ -113,7 +135,9 @@ function App() {
           />
 
 
-          {/* Profile */}
+          {/* =================================================
+              PROFILE
+          ================================================== */}
 
           <Route
             path="/profile"
@@ -121,7 +145,9 @@ function App() {
           />
 
 
-          {/* Company / Legal Pages */}
+          {/* =================================================
+              COMPANY / LEGAL
+          ================================================== */}
 
           <Route
             path="/about"

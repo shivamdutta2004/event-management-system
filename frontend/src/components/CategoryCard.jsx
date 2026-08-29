@@ -33,7 +33,7 @@ function CategoryCard({ category }) {
       </h3>
 
       <p className="mt-1 text-sm text-slate-500">
-        {category.count} events
+        {category.name} events
       </p>
     </button>
   )

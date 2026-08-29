@@ -157,12 +157,12 @@ function Register() {
   return (
     <div className="min-h-[calc(100vh-4rem)] bg-slate-50">
 
+      {/* =====================================================
+          LEFT PANEL
+      ====================================================== */}
+
       <div className="mx-auto grid min-h-[calc(100vh-4rem)] max-w-7xl lg:grid-cols-[1.05fr_0.95fr]">
 
-
-        {/* =====================================================
-            LEFT PANEL
-        ====================================================== */}
 
         <div className="relative hidden overflow-hidden bg-gradient-to-br from-indigo-700 via-violet-700 to-purple-800 px-10 py-14 text-white lg:flex lg:flex-col lg:justify-between">
 
@@ -221,7 +221,6 @@ function Register() {
 
               <div className="mt-8 space-y-3">
 
-
                 <div className="flex items-center gap-3 text-sm text-white/85">
 
                   <CheckCircle2 className="h-4 w-4 text-emerald-300" />
@@ -248,7 +247,6 @@ function Register() {
 
                 </div>
 
-
               </div>
 
             </div>
@@ -259,7 +257,6 @@ function Register() {
           {/* Stats */}
 
           <div className="relative grid grid-cols-3 gap-6 border-t border-white/10 pt-8">
-
 
             <div>
 
@@ -298,7 +295,6 @@ function Register() {
               </p>
 
             </div>
-
 
           </div>
 
@@ -674,9 +670,11 @@ function Register() {
 
               {/* Terms */}
 
-              <label className="flex items-start gap-3">
+              <div className="flex items-start gap-3">
 
                 <input
+                  id="terms"
+                  name="terms"
                   type="checkbox"
                   checked={termsAccepted}
                   onChange={(event) =>
@@ -689,31 +687,34 @@ function Register() {
                 />
 
 
-                <span className="text-sm leading-6 text-slate-500">
+                <label
+                  htmlFor="terms"
+                  className="text-sm leading-6 text-slate-500"
+                >
 
                   I agree to the{" "}
 
-                  <a
-                    href="#"
+                  <Link
+                    to="/terms"
                     className="font-medium text-indigo-600 hover:text-indigo-800 hover:underline"
                   >
                     Terms of Service
-                  </a>
+                  </Link>
 
                   {" "}and{" "}
 
-                  <a
-                    href="#"
+                  <Link
+                    to="/privacy"
                     className="font-medium text-indigo-600 hover:text-indigo-800 hover:underline"
                   >
                     Privacy Policy
-                  </a>
+                  </Link>
 
                   .
 
-                </span>
+                </label>
 
-              </label>
+              </div>
 
 
               {/* Submit */}
@@ -725,6 +726,7 @@ function Register() {
               >
 
                 {loading ? (
+
                   <>
 
                     <span className="h-4 w-4 animate-spin rounded-full border-2 border-white/30 border-t-white" />
@@ -732,7 +734,9 @@ function Register() {
                     Creating account...
 
                   </>
+
                 ) : (
+
                   <>
 
                     Create Account
@@ -740,6 +744,7 @@ function Register() {
                     <ArrowRight className="h-4 w-4" />
 
                   </>
+
                 )}
 
               </button>

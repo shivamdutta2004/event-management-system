@@ -218,9 +218,7 @@ function Home() {
         <div className="mx-auto grid max-w-6xl grid-cols-2 divide-x divide-slate-200 sm:grid-cols-4">
 
           <div className="px-4 py-8 text-center sm:py-10">
-            <p className="text-2xl font-bold text-slate-950 sm:text-3xl">
-              500+
-            </p>
+            
 
             <p className="mt-1 text-sm text-slate-500">
               Events
@@ -229,9 +227,7 @@ function Home() {
 
 
           <div className="px-4 py-8 text-center sm:py-10">
-            <p className="text-2xl font-bold text-slate-950 sm:text-3xl">
-              10K+
-            </p>
+            
 
             <p className="mt-1 text-sm text-slate-500">
               Participants
@@ -240,9 +236,7 @@ function Home() {
 
 
           <div className="px-4 py-8 text-center sm:py-10">
-            <p className="text-2xl font-bold text-slate-950 sm:text-3xl">
-              100+
-            </p>
+            
 
             <p className="mt-1 text-sm text-slate-500">
               Organizers
@@ -251,9 +245,7 @@ function Home() {
 
 
           <div className="px-4 py-8 text-center sm:py-10">
-            <p className="text-2xl font-bold text-slate-950 sm:text-3xl">
-              50+
-            </p>
+            
 
             <p className="mt-1 text-sm text-slate-500">
               Categories
