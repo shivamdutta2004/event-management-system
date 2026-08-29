@@ -798,7 +798,20 @@ function EventDetails() {
         <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
 
           <div
-            className={`relative overflow-hidden rounded-3xl bg-gradient-to-br ${event.image} shadow-xl`}
+            className={`relative overflow-hidden rounded-3xl shadow-xl ${
+              event.cover_image
+                ? "bg-slate-200"
+                : `bg-gradient-to-br ${event.image}`
+            }`}
+            style={
+              event.cover_image
+                ? {
+                    backgroundImage: `url(${event.cover_image.startsWith("http") ? event.cover_image : `http://127.0.0.1:8000${event.cover_image}`})`,
+                    backgroundSize: "cover",
+                    backgroundPosition: "center",
+                  }
+                : undefined
+            }
           >
 
             <div className="absolute inset-0 bg-black/10" />
@@ -822,7 +835,7 @@ function EventDetails() {
                 </h1>
 
 
-                <p className="mt-5 max-w-3xl text-base leading-7 text-white/85 sm:text-lg">
+                <p className="mt-5 min-w-0 max-w-3xl break-all text-base leading-7 text-white/85 sm:text-lg">
                   {event.description}
                 </p>
 
@@ -872,16 +885,15 @@ function EventDetails() {
           MAIN CONTENT
       ====================================================== */}
 
-      <main className="mx-auto max-w-7xl px-4 pb-20 sm:px-6 lg:px-8">
-
-        <div className="grid gap-8 lg:grid-cols-[1fr_320px]">
+      <main className="mx-auto w-full max-w-7xl overflow-x-hidden px-4 pb-20 sm:px-6 lg:px-8">
+        <div className="grid min-w-0 gap-8 lg:grid-cols-[minmax(0,1fr)_320px]">
 
 
           {/* =================================================
               LEFT COLUMN
           ================================================= */}
 
-          <div className="space-y-8">
+          <div className="min-w-0 space-y-8">
 
 
             {/* =================================================
@@ -902,7 +914,7 @@ function EventDetails() {
 
               <div className="mt-5 space-y-4 text-sm leading-7 text-slate-600 sm:text-base">
 
-                <p>
+                <p className="min-w-0 break-all text-sm leading-7 text-slate-600 sm:text-base">
                   {event.description}
                 </p>
 
@@ -1261,7 +1273,7 @@ function EventDetails() {
               RIGHT SIDEBAR
           ================================================= */}
 
-          <aside className="lg:sticky lg:top-24 lg:self-start">
+          <aside className="min-w-0 lg:sticky lg:top-24 lg:self-start">
 
             <div className="overflow-hidden rounded-2xl border border-indigo-100 bg-white shadow-lg shadow-indigo-100/30">
 

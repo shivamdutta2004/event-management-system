@@ -1,6 +1,16 @@
 from datetime import date
+from pathlib import Path
+from uuid import uuid4
 
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import (
+    APIRouter,
+    Depends,
+    File,
+    HTTPException,
+    UploadFile,
+    status,
+)
+
 from sqlalchemy import delete, func, select
 from sqlalchemy.orm import Session
 
@@ -101,6 +111,118 @@ def get_events(
         )
         for event in events
     ]
+
+
+# =========================================================
+# UPLOAD EVENT COVER
+# =========================================================
+
+@router.post(
+    "/upload-cover",
+)
+async def upload_event_cover(
+    file: UploadFile = File(...),
+    current_user: User = Depends(
+        get_current_user
+    ),
+):
+
+    # ---------------------------------------------------------
+    # ORGANIZER ONLY
+    # ---------------------------------------------------------
+
+    if current_user.role != "organizer":
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Only organizers can upload event covers.",
+        )
+
+    # ---------------------------------------------------------
+    # VALIDATE FILE TYPE
+    # ---------------------------------------------------------
+
+    allowed_types = {
+        "image/png",
+        "image/jpeg",
+        "image/webp",
+    }
+
+    if file.content_type not in allowed_types:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Please upload a PNG, JPG or WEBP image.",
+        )
+
+    # ---------------------------------------------------------
+    # READ FILE
+    # ---------------------------------------------------------
+
+    file_bytes = await file.read()
+
+    # ---------------------------------------------------------
+    # VALIDATE FILE SIZE
+    # ---------------------------------------------------------
+
+    max_size = 5 * 1024 * 1024
+
+    if len(file_bytes) > max_size:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Image size must be 5 MB or less.",
+        )
+
+    # ---------------------------------------------------------
+    # UPLOAD DIRECTORY
+    # ---------------------------------------------------------
+
+    uploads_dir = (
+        Path(__file__).resolve().parent.parent
+        / "uploads"
+        / "event_covers"
+    )
+
+    uploads_dir.mkdir(
+        parents=True,
+        exist_ok=True,
+    )
+
+    # ---------------------------------------------------------
+    # SAFE FILE EXTENSION
+    # ---------------------------------------------------------
+
+    extension_map = {
+        "image/png": ".png",
+        "image/jpeg": ".jpg",
+        "image/webp": ".webp",
+    }
+
+    extension = extension_map[
+        file.content_type
+    ]
+
+    filename = (
+        f"{uuid4().hex}{extension}"
+    )
+
+    file_path = uploads_dir / filename
+
+    # ---------------------------------------------------------
+    # SAVE FILE
+    # ---------------------------------------------------------
+
+    file_path.write_bytes(
+        file_bytes
+    )
+
+    # ---------------------------------------------------------
+    # RETURN PATH
+    # ---------------------------------------------------------
+
+    return {
+        "cover_image": (
+            f"/uploads/event_covers/{filename}"
+        )
+    }
 
 
 # =========================================================
@@ -235,7 +357,7 @@ def update_event(
     )
 
     # ---------------------------------------------------------
-    # CALCULATE THE VALUES THAT WILL EXIST AFTER THE UPDATE
+    # CALCULATE VALUES AFTER UPDATE
     # ---------------------------------------------------------
 
     new_start_time = updates.get(
@@ -287,7 +409,7 @@ def update_event(
         )
 
     # ---------------------------------------------------------
-    # VALIDATE CAPACITY AGAINST EXISTING REGISTRATIONS
+    # VALIDATE CAPACITY
     # ---------------------------------------------------------
 
     confirmed_registrations = db.scalar(
@@ -309,11 +431,11 @@ def update_event(
         )
 
     # ---------------------------------------------------------
-    # APPLY UPDATES ONLY AFTER ALL VALIDATION PASSES
+    # APPLY UPDATES
     # ---------------------------------------------------------
 
     for field, value in updates.items():
-     
+
         if isinstance(value, str):
             value = value.strip()
 
@@ -368,7 +490,7 @@ def delete_event(
         )
 
     # ---------------------------------------------------------
-    # DELETE DEPENDENT REGISTRATIONS FIRST
+    # DELETE DEPENDENT REGISTRATIONS
     # ---------------------------------------------------------
 
     db.execute(

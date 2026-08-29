@@ -472,6 +472,36 @@ function CreateEvent() {
 
     try {
       // -----------------------------------------------------
+      // UPLOAD EVENT COVER
+      // -----------------------------------------------------
+
+      let coverImage = null
+
+      if (imageFile) {
+        const formData =
+          new FormData()
+
+        formData.append(
+          "file",
+          imageFile
+        )
+
+        const uploadResponse =
+          await apiRequest(
+            "/api/events/upload-cover",
+            {
+              method: "POST",
+              body: formData,
+            }
+          )
+
+        coverImage =
+          uploadResponse?.cover_image ||
+          null
+      }
+
+
+      // -----------------------------------------------------
       // CREATE EVENT
       // -----------------------------------------------------
 
@@ -486,7 +516,7 @@ function CreateEvent() {
           description.trim(),
 
         cover_image:
-          null,
+          coverImage,
 
         event_date:
           eventDate,

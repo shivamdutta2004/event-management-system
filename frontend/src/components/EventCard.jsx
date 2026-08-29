@@ -6,6 +6,10 @@ import {
 import { Link } from "react-router-dom"
 
 
+// =========================================================
+// EVENT CARD
+// =========================================================
+
 function EventCard({ event }) {
 
   const attendeeCount =
@@ -20,8 +24,38 @@ function EventCard({ event }) {
     0
 
 
+  // =======================================================
+  // EVENT COVER URL
+  // =======================================================
+
+  const getCoverImageUrl = () => {
+
+    if (!event?.cover_image) {
+      return null
+    }
+
+
+    // Already an absolute URL
+    if (
+      event.cover_image.startsWith("http://") ||
+      event.cover_image.startsWith("https://")
+    ) {
+      return event.cover_image
+    }
+
+
+    // Local FastAPI uploaded image
+    return `http://127.0.0.1:8000${event.cover_image}`
+  }
+
+
+  const coverImageUrl =
+    getCoverImageUrl()
+
+
   return (
     <article className="group overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm transition duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-slate-200/60">
+
 
       {/* =====================================================
           EVENT IMAGE
@@ -29,25 +63,56 @@ function EventCard({ event }) {
 
       <div
         className={`relative h-52 overflow-hidden ${
-          event.image ||
-          "bg-gradient-to-br from-indigo-600 via-violet-600 to-purple-900"
+          coverImageUrl
+            ? "bg-slate-200"
+            : event.image ||
+              "bg-gradient-to-br from-indigo-600 via-violet-600 to-purple-900"
         }`}
       >
+
+        {coverImageUrl && (
+          <img
+            src={coverImageUrl}
+            alt={
+              event.title
+                ? `${event.title} cover`
+                : "Event cover"
+            }
+            className="absolute inset-0 h-full w-full object-cover"
+            onError={(imageEvent) => {
+              imageEvent.currentTarget.style.display =
+                "none"
+            }}
+          />
+        )}
+
 
         <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
 
 
+        {/* Category */}
+
         <span className="absolute left-4 top-4 rounded-full bg-white/90 px-3 py-1.5 text-xs font-semibold text-slate-800 backdrop-blur">
-          {event.category || "Technology"}
+
+          {event.category ||
+            "Technology"}
+
         </span>
 
 
+        {/* Date */}
+
         <div className="absolute bottom-4 left-4 text-white">
+
           <p className="text-sm font-medium">
+
             {formatEventDate(
-              event.date || event.event_date
+              event.date ||
+              event.event_date
             )}
+
           </p>
+
         </div>
 
       </div>
@@ -59,39 +124,57 @@ function EventCard({ event }) {
 
       <div className="p-5">
 
+
+        {/* Title */}
+
         <h3 className="line-clamp-2 text-lg font-semibold tracking-tight text-slate-950">
-          {event.title || "Untitled Event"}
+
+          {event.title ||
+            "Untitled Event"}
+
         </h3>
 
 
         <div className="mt-4 space-y-2.5">
 
+
           {/* Location */}
+
           <div className="flex items-center gap-2.5 text-sm text-slate-500">
 
-            <MapPin className="h-4 w-4 shrink-0" />
+            <MapPin
+              className="h-4 w-4 shrink-0"
+            />
 
             <span className="truncate">
+
               {event.location ||
                 "Location unavailable"}
+
             </span>
 
           </div>
 
 
           {/* Attendees */}
+
           <div className="flex items-center gap-2.5 text-sm text-slate-500">
 
-            <Users className="h-4 w-4 shrink-0" />
+            <Users
+              className="h-4 w-4 shrink-0"
+            />
 
             <span>
+
               {attendeeCount} attendees
 
               {maxAttendees > 0 &&
                 ` / ${maxAttendees}`}
+
             </span>
 
           </div>
+
 
         </div>
 
@@ -102,6 +185,9 @@ function EventCard({ event }) {
 
         <div className="mt-5 flex items-center justify-between border-t border-slate-100 pt-4">
 
+
+          {/* Organizer */}
+
           <div>
 
             <p className="text-xs text-slate-400">
@@ -109,11 +195,16 @@ function EventCard({ event }) {
             </p>
 
             <p className="mt-0.5 text-sm font-medium text-slate-700">
-              {event.organizer_name || "Evently Team"}
+
+              {event.organizer_name ||
+                "Evently Team"}
+
             </p>
 
           </div>
 
+
+          {/* View Event */}
 
           <Link
             to={`/events/${event.id}`}
@@ -121,6 +212,7 @@ function EventCard({ event }) {
           >
             View Event
           </Link>
+
 
         </div>
 
@@ -142,9 +234,10 @@ function formatEventDate(dateValue) {
   }
 
 
-  const date = new Date(
-    `${dateValue}T00:00:00`
-  )
+  const date =
+    new Date(
+      `${dateValue}T00:00:00`
+    )
 
 
   if (
@@ -152,7 +245,11 @@ function formatEventDate(dateValue) {
       date.getTime()
     )
   ) {
-    return String(dateValue)
+
+    return String(
+      dateValue
+    )
+
   }
 
 
@@ -166,5 +263,9 @@ function formatEventDate(dateValue) {
   )
 }
 
+
+// =========================================================
+// EXPORT
+// =========================================================
 
 export default EventCard
